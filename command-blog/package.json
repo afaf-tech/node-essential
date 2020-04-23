@@ -1,0 +1,19 @@
+{
+  "name": "command-blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "add":"node add-post",
+    "view":"node view-post",
+    "setup":"node setup",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "inquirer": "^7.1.0",
+    "sqlite3": "^4.1.1"
+  }
+}
