@@ -22,7 +22,7 @@ router.get('/:name', (req,res)=>{
 
     // hello/:name
     const name = req.params.name;
-    res.render('hello', { name});
+    res.render('hello', { name,title:'hello'});
 });
 
 
