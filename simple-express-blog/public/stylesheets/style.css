@@ -1,0 +1,52 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+*{
+  box-sizing: border-box;
+}
+
+.add-post-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-post-form input,
+.add-post-form textarea,
+.add-post-form button{
+  width: 100%;
+}
+
+
+.add-post-form label{
+  background-color: #00B7FF;
+  color: #fff;
+  border: none;
+  padding: 10px;
+}
+
+.post{
+  color: rgb(56, 99, 116);
+}
+
+
+.post h1{
+  color: rgb(24, 102, 132);
+}
+
+.post .meta{
+  font-size: 10px;
+}
+
+
+
+.h2{
+  padding: 10px;
+  background-color: #1cc224;
+  color:#fff;
+}
