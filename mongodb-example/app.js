@@ -4,6 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var MongoClient = require('mongodb').MongoClient;
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -14,15 +18,17 @@ var app = express();
 MongoClient.connect('mongodb://localhost:27017', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}, (err,client)=>{
+}, (err,client)=>{ 
   if(err) throw err;
   console.log('db successffully connected.')
   const db = client.db('dbblog');
   const collection = db.collection('posts');
+  const users = db.collection('users');
 
-
+  // users.find({}).toArray().then(data=>console.log(data))
   // save db collection to local app 
   app.locals.collection = collection;  
+  app.locals.users = users;  
 })
 
 
@@ -36,6 +42,47 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//
+app.use(flash());
+app.use(session({
+  secret: 'test secret',
+  resave:false,
+  saveUninitialized:false
+})
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(
+  {
+    passReqToCallback: true,
+  },
+  (req, username, password, authCheckDone)=>{
+    app.locals.users
+      .findOne({username})
+      .then(user => {
+        if(!user){
+          return authCheckDone(null, false, req.flash('error', 'User not found.'));
+        }
+
+        if(user.password !== password){
+          return authCheckDone(null,false, req.flash('error', 'Password is incorrect.'));
+        }
+
+        return authCheckDone(null, user);
+      })
+  }
+));
+
+passport.serializeUser((user, done)=>{
+  done(null, user._id);
+});
+
+passport.deserializeUser((id, done)=>{
+  done(null, { id })
+});
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

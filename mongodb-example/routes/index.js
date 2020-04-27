@@ -1,6 +1,33 @@
 var express = require('express');
 var router = express.Router();
 const ObjectID = require('mongodb').ObjectID;
+const passport = require('passport');
+
+/* Login */
+
+router.get('/login', (req,res,next)=>{
+  const errors = req.flash().error || [];
+  res.render('login', {errors})
+});
+
+
+router.post('/login', passport.authenticate('local',{
+  failureFlash: true,
+  failureRedirect:'/login',
+}), (req,res,next)=>{
+  res.redirect('/secret');
+});
+
+const ensureAuthenticated = (req,res, next)=>{
+  if(req.isAuthenticated()){
+    return next();
+  }
+  res.redirect('/login');
+}
+
+router.get('/secret', ensureAuthenticated,(req,res,next)=>{
+  res.send('Secret area');
+})
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
